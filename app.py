@@ -1,7 +1,10 @@
 import streamlit as st
-import openai
+from openai import OpenAI
 import pandas as pd
 from PyPDF2 import PdfReader
+
+# Initialize OpenAI client (this replaces openai.api_key = ...)
+client = OpenAI()
 
 st.set_page_config(page_title="Flash Card Generator")
 st.title("📚 Flash Card Generator using LLMs")
@@ -26,8 +29,6 @@ else:
     text = ""
 
 def generate_flashcards(text, subject="General"):
-    openai.api_key = st.secrets["OPENAI_API_KEY"]
-
     prompt = f"""
 You are a helpful assistant that creates study flashcards.
 Generate 10–15 question-answer flashcards from the following {subject} content:
@@ -38,14 +39,13 @@ Use this format:
 Q: ...
 A: ...
 Only return the flashcards.
-    """
-
-    response = openai.ChatCompletion.create(
+"""
+    response = client.chat.completions.create(
         model="gpt-3.5-turbo",
         messages=[{"role": "user", "content": prompt}],
         temperature=0.5
     )
-    return response['choices'][0]['message']['content']
+    return response.choices[0].message.content
 
 if st.button("Generate Flashcards") and text:
     with st.spinner("Generating flashcards..."):
