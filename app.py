@@ -4,7 +4,7 @@ import pandas as pd
 from PyPDF2 import PdfReader
 
 # Initialize OpenAI client (this replaces openai.api_key = ...)
-client = OpenAI()
+client = OpenAI(api_key=st.secrets["OPENAI_API_KEY"])
 
 st.set_page_config(page_title="Flash Card Generator")
 st.title("📚 Flash Card Generator using LLMs")
